@@ -5,6 +5,7 @@ import Team from './pages/Team';
 import Contact from './pages/Contact';
 import BookPage from './pages/BookPage';
 import Admin from './pages/Admin';
+import Register from './pages/Register';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <NavLink className={({ isActive }) => isActive ? "nav-link active fw-bold text-info" : "nav-link"} to="/admin">Admin</NavLink>
             <NavLink className={({ isActive }) => isActive ? "nav-link active fw-bold text-info" : "nav-link"} to="/team">Team</NavLink>
             <NavLink className={({ isActive }) => isActive ? "nav-link active fw-bold text-info" : "nav-link"} to="/contact">Contact</NavLink>
+            <NavLink className={({ isActive }) => isActive ? "nav-link active fw-bold text-success" : "nav-link"} to="/register">Register</NavLink>
           </div>
         </div>
       </nav>
@@ -29,6 +31,7 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/team" element={<Team />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
 
       <footer className="text-center py-4 bg-light mt-5">
