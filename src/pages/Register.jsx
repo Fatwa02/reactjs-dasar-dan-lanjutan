@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +15,10 @@ const Register = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -86,19 +92,36 @@ const Register = () => {
       return;
     }
 
-    // Simulate registration success
-    setSuccessMessage('✓ Registrasi berhasil! Silakan login dengan akun Anda.');
-    setFormData({
-      fullName: '',
-      email: '',
-      username: '',
-      password: '',
-      confirmPassword: ''
-    });
-    setErrors({});
+    setIsLoading(true);
 
-    // Clear success message after 5 seconds
-    setTimeout(() => setSuccessMessage(''), 5000);
+    // Simulasi delay untuk registrasi
+    setTimeout(() => {
+      const result = register({
+        fullName: formData.fullName,
+        email: formData.email,
+        username: formData.username,
+        password: formData.password
+      });
+
+      if (result.success) {
+        setSuccessMessage('✓ Registrasi berhasil! Mengalihkan ke login...');
+        setFormData({
+          fullName: '',
+          email: '',
+          username: '',
+          password: '',
+          confirmPassword: ''
+        });
+        setErrors({});
+        
+        setTimeout(() => {
+          navigate('/login');
+        }, 1500);
+      } else {
+        setErrors({ submit: result.message });
+      }
+      setIsLoading(false);
+    }, 800);
   };
 
   const handleReset = () => {
@@ -285,13 +308,24 @@ const Register = () => {
                     <button
                       type="submit"
                       className="btn btn-primary btn-lg flex-md-grow-1"
+                      disabled={isLoading}
                     >
-                      <i className="bi bi-check-circle"></i> Daftar
+                      {isLoading ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                          Loading...
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-check-circle"></i> Daftar
+                        </>
+                      )}
                     </button>
                     <button
                       type="button"
                       className="btn btn-outline-secondary btn-lg flex-md-grow-1"
                       onClick={handleReset}
+                      disabled={isLoading}
                     >
                       <i className="bi bi-arrow-clockwise"></i> Reset
                     </button>
@@ -300,7 +334,7 @@ const Register = () => {
                   {/* Login Link */}
                   <div className="text-center">
                     <p className="text-muted">
-                      Sudah punya akun? <a href="#" className="text-primary fw-semibold text-decoration-none">Login di sini</a>
+                      Sudah punya akun? <Link to="/login" className="text-primary fw-semibold text-decoration-none">Login di sini</Link>
                     </p>
                   </div>
                 </form>

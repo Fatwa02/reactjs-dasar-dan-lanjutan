@@ -1,8 +1,12 @@
 // src/pages/Home.jsx
 import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import UserDashboard from '../components/UserDashboard';
 import booksData from '../Utils/books';
+import { Link } from 'react-router-dom';
 
 function Home() {
+  const { isAuthenticated } = useAuth();
   // Menggunakan Hooks useState (Nilai Tambah!) [cite: 27, 28]
   const [listBuku, setListBuku] = useState(booksData);
 
@@ -16,8 +20,28 @@ function Home() {
     setListBuku([...listBuku, newBook]);
   };
 
+  if (isAuthenticated) {
+    return <UserDashboard />;
+  }
+
   return (
     <div className="container py-5">
+      {/* Welcome Section */}
+      <div className="alert alert-info mb-5" role="alert">
+        <h4 className="alert-heading">
+          <i className="bi bi-info-circle"></i> Selamat Datang di Booksales!
+        </h4>
+        <p>
+          Silakan <Link to="/login" className="alert-link fw-bold">login</Link> atau <Link to="/register" className="alert-link fw-bold">daftar</Link> untuk mengakses fitur lengkap dan halaman terbatas.
+        </p>
+        <hr />
+        <p className="mb-0 small">
+          Demo Account:<br />
+          <strong>Admin:</strong> admin@booksales.com / admin123<br />
+          <strong>User:</strong> user@booksales.com / user123
+        </p>
+      </div>
+
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Koleksi Buku Terpopuler</h2>
         <button className="btn btn-success" onClick={tambahBukuDummy}>+ Tambah Buku (Hooks)</button>
